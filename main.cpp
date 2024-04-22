@@ -1,9 +1,9 @@
 
 #include "player.h"
-#include "fun_piano.h"
+#include "reproducible_audio.h"
 
 int main()
 {
-	ADPCMSound sound(fun_piano_bin,fun_piano_bin_len);
+	ADPCMSound sound(reproducible_audio_bin,reproducible_audio_bin_len);
 	Player::instance().play(sound);
 }

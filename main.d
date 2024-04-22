@@ -32,7 +32,7 @@ main.o: main.cpp player.h miosix/miosix.h \
  miosix/kernel/scheduler/edf/edf_scheduler_types.h \
  miosix/stdlib_integration/libstdcpp_integration.h miosix/kernel/error.h \
  miosix/kernel/cpu_time_counter_types.h miosix/kernel/queue.h \
- miosix/kernel/cpu_time_counter.h miosix/util/util.h fun_piano.h
+ miosix/kernel/cpu_time_counter.h miosix/util/util.h reproducible_audio.h
 
 player.h:
 
@@ -122,4 +122,4 @@ miosix/kernel/cpu_time_counter.h:
 
 miosix/util/util.h:
 
-fun_piano.h:
+reproducible_audio.h:

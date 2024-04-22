@@ -52,7 +52,8 @@ int main(int argc, char *argv[])
 		in|=ADPCM_Encode(data.at(i+1))<<4;
 		encoded.push_back(in);
 	}
-	string outname=filename.substr(0,filename.find_last_of('.'))+".bin";
+	//string outname=filename.substr(0,filename.find_last_of('.'))+".bin";
+	string outname= "reproducible_audio.bin";
 	ofstream out(outname.c_str(),ios::binary);
 	out.write(reinterpret_cast<char*>(&encoded[0]),encoded.size());
 
@@ -64,7 +65,8 @@ int main(int argc, char *argv[])
 		validation<<ADPCM_Decode(in>>4)<<' '<<endl;
 	}
 
-	string headername=filename.substr(0,filename.find_last_of('.'))+".h";
+	//string headername=filename.substr(0,filename.find_last_of('.'))+".h";
+	string headername="reproducible_audio.h";
 	run(string("xxd -i ")+outname+" "+headername);
 	run(string("sed -i 's/unsigned/const unsigned/g' ")+headername);
 }
