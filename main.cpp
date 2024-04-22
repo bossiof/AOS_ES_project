@@ -1,9 +1,9 @@
 
 #include "player.h"
-#include "sad_trombone.h"
+#include "fun_piano.h"
 
 int main()
 {
-	ADPCMSound sound(sad_trombone_bin,sad_trombone_bin_len);
+	ADPCMSound sound(fun_piano_bin,fun_piano_bin_len);
 	Player::instance().play(sound);
 }
