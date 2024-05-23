@@ -17,13 +17,14 @@ SUBDIRS := $(KPATH)
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp player.cpp adpcm.c
+main.cpp player.cpp adpcm.c convert_2.cpp
 
 ##
 ## List here additional static libraries with relative path
 ##
 LIBS :=
 
+ 
 ##
 ## List here additional include directories (in the form -Iinclude_dir)
 ##
