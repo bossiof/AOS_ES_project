@@ -136,6 +136,22 @@ public:
 	static Player& instance();
 
 	/**
+	 * Initialize the player
+	 */
+	void initialize();
+
+	/**
+	 * trail blank audio at the end of the song
+	 */
+	void trail();
+
+	/**
+	 * Play an audio file a single time, returning after the file has coompleted playing
+	 * \param sound sound file to play
+	 */
+	void single_play(Sound& sound);
+
+	/**
 	 * Play an audio file, returning after the file has coompleted playing
 	 * \param sound sound file to play
 	 */

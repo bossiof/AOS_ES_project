@@ -33,7 +33,7 @@ main.o: main.cpp player.h miosix/miosix.h \
  miosix/stdlib_integration/libstdcpp_integration.h miosix/kernel/error.h \
  miosix/kernel/cpu_time_counter_types.h miosix/kernel/queue.h \
  miosix/kernel/cpu_time_counter.h miosix/util/util.h reproducible_audio.h \
- convert_2.h
+ conversion.h
 
 player.h:
 
@@ -125,4 +125,4 @@ miosix/util/util.h:
 
 reproducible_audio.h:
 
-convert_2.h:
+conversion.h:
