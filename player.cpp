@@ -50,7 +50,7 @@ typedef Gpio<GPIOD_BASE,4>  reset;
 typedef SoftwareI2C<sda,scl> i2c;
 #endif
 
-static const int bufferSize=2048; //Buffer RAM is 4*bufferSize bytes
+static const int bufferSize=512; //Buffer RAM is 4*bufferSize bytes
 static Thread *waiting;
 static BufferQueue<unsigned short,bufferSize> *bq;
 static bool enobuf=true;
@@ -339,7 +339,6 @@ void Player::single_play(Sound& sound){
     memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
 	bufferFilled();  
     cs43l22send(0x0f,0xf0); //Mute all channels
-    //cs43l22send(0x02,0x9f); //Audio shutdown
 
 }
 
