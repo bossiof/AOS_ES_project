@@ -1,3 +1,3 @@
-convert_2.o: convert_2.cpp adpcm.h
+conversion.o: conversion.cpp adpcm.h
 
 adpcm.h:

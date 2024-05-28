@@ -50,7 +50,7 @@ typedef Gpio<GPIOD_BASE,4>  reset;
 typedef SoftwareI2C<sda,scl> i2c;
 #endif
 
-static const int bufferSize=512; //Buffer RAM is 4*bufferSize bytes
+static const int bufferSize=1024; //Buffer RAM is 4*bufferSize bytes
 static Thread *waiting;
 static BufferQueue<unsigned short,bufferSize> *bq;
 static bool enobuf=true;
@@ -250,7 +250,6 @@ Player& Player::instance()
 
 
 void Player::initialize(){
-    //bq=new BufferQueue<unsigned short,bufferSize>();
 
     {
         FastInterruptDisableLock dLock;
@@ -276,7 +275,6 @@ void Player::initialize(){
     }
     //Wait for PLL to lock
     while((RCC->CR & RCC_CR_PLLI2SRDY)==0) ;
-
     reset::low(); //Keep in reset state
     delayUs(5);
     reset::high();
@@ -301,6 +299,8 @@ void Player::initialize(){
     NVIC_SetPriority(DMA1_Stream5_IRQn,2);//High priority for DMA
 	NVIC_EnableIRQ(DMA1_Stream5_IRQn);    
 
+    bq=new BufferQueue<unsigned short,bufferSize>(); //initialization of the BufferQueue used for the double buffering
+
     //Leading blank audio, so as to be sure audio is played from the start
     memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
 	bufferFilled();
@@ -311,8 +311,7 @@ void Player::initialize(){
 //function used to play the sound a single time
 
 void Player::single_play(Sound& sound){
-	cs43l22send(0x0f,0x00); //Unmute all channels
-	bq=new BufferQueue<unsigned short,bufferSize>();
+	//cs43l22send(0x0f,0x00); //Unmute all channels
 	//Start playing
 	sound.rewind();
     bool first=true;
@@ -333,12 +332,11 @@ void Player::single_play(Sound& sound){
 		if(sound.fillStereoBuffer(getWritableBuffer(),bufferSize)) break;
 		bufferFilled();
 	}
-    delete bq;
 
 	//Trailing blank audio, so as to be sure audio is played to the end
-    memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
-	bufferFilled();  
-    cs43l22send(0x0f,0xf0); //Mute all channels
+    //memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
+	//bufferFilled();  
+    //cs43l22send(0x0f,0xf0); //Mute all channels
 
 }
 
@@ -364,6 +362,7 @@ void Player::trail()
 		FastInterruptDisableLock dLock;
         RCC->CR &= ~RCC_CR_PLLI2SON;
     }
+    delete bq;
 
 }
 //method used for continous play
