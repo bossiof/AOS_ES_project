@@ -20,12 +20,9 @@ int main()
 	
 
 
-	int buffersize=8000;//buffer passed to the conversion function 
+	int buffersize=4000;//buffer passed to the conversion function 
 	int playbuffer = 16384; //buffer used for audio playback
-	//static const int bufferSize=1024;//buffer used for the Player class
 	int audio_size; //audio size (in number of samples) used for audio playback and also for information purposes
-	//static BufferQueue<unsigned short,bufferSize> *bq;
-	//bq=new BufferQueue<unsigned short,bufferSize>();
 	string filename;
 	filename= "/sd/reproducible_audio.txt";
 	//the conversion takes the raw file from the microsd and converts it into an ADPCM encoded file (also on the microsd)
@@ -36,15 +33,14 @@ int main()
 
 	unsigned char *reproducible_audio_array; //array used for the playback buffer
 	reproducible_audio_array = (unsigned char*)malloc(playbuffer);
-
+	ADPCMSound sound(reproducible_audio_array,playbuffer);
 	ifstream audio_bin_file (filename.c_str(),ios::binary);
 
 	printf("starting audio reproduction:\n");
 	Player::instance().initialize(); //here i initialize the player to avoid eventual overhead during audio reproduction
 	//audio reproduction phase
 	for(int i=0;i<audio_size;i+=playbuffer){
-		audio_bin_file.read(reinterpret_cast<char*>(reproducible_audio_array),playbuffer);
-		ADPCMSound sound(reproducible_audio_array,playbuffer);
+		audio_bin_file.read(reinterpret_cast<char*>(sound.soundData),playbuffer);
 		Player::instance().single_play(sound);
 		
 		if(!audio_bin_file) {

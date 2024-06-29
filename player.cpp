@@ -50,7 +50,7 @@ typedef Gpio<GPIOD_BASE,4>  reset;
 typedef SoftwareI2C<sda,scl> i2c;
 #endif
 
-static const int bufferSize=1024; //Buffer RAM is 4*bufferSize bytes
+static const int bufferSize=4096; //Buffer RAM is 4*bufferSize bytes
 static Thread *waiting;
 static BufferQueue<unsigned short,bufferSize> *bq;
 static bool enobuf=true;
@@ -207,9 +207,10 @@ bool ADPCMSound::fillMonoBuffer(unsigned short *buffer, int size)
     if(size & 0x1) return true; //Size not divisible by 2
 	int remaining=soundSize-index;
 	int length=std::min(size,remaining*2);
+    unsigned char in;
 	for(int i=0;i<length;i+=2)
 	{
-		unsigned char in=soundData[index++];
+		in=soundData[index++];
 		buffer[i+0]=ADPCM_Decode(in & 0xf);
 		buffer[i+1]=ADPCM_Decode(in>>4);
 	}
@@ -223,9 +224,10 @@ bool ADPCMSound::fillStereoBuffer(unsigned short *buffer, int size)
     if(size & 0x3) return true; //Size not divisible by 4
 	int remaining=soundSize-index;
 	int length=std::min(size,remaining*4);
+    unsigned char in;
 	for(int i=0;i<length;i+=4)
 	{
-		unsigned char in=soundData[index++];
+		in=soundData[index++];
 		buffer[i+0]=buffer[i+1]=ADPCM_Decode(in & 0xf);
 		buffer[i+2]=buffer[i+3]=ADPCM_Decode(in>>4);
 	}
@@ -305,17 +307,16 @@ void Player::initialize(){
     memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
 	bufferFilled();
 
-
+    waiting=Thread::getCurrentThread();
 }
 
 //function used to play the sound a single time
 
 void Player::single_play(Sound& sound){
-	//cs43l22send(0x0f,0x00); //Unmute all channels
+	cs43l22send(0x0f,0x00); //Unmute all channels
 	//Start playing
 	sound.rewind();
     bool first=true;
-	waiting=Thread::getCurrentThread();
 	for(;;)
 	{
 		if(enobuf)
@@ -327,8 +328,10 @@ void Player::single_play(Sound& sound){
             {
                 first=false;
                 cs43l22send(0x02,0x9e);
+
             }
 		}
+           
 		if(sound.fillStereoBuffer(getWritableBuffer(),bufferSize)) break;
 		bufferFilled();
 	}
@@ -464,6 +467,8 @@ void Player::play(Sound& sound)
     }
     delete bq;
 }
+
+
 
 
 bool Player::isPlaying() const

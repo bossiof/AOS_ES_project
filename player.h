@@ -84,7 +84,7 @@ public:
 	 * the expected use case of the buffer being const and static
 	 * \param size size of data
 	 */
-	ADPCMSound(const unsigned char *data, int size)
+	ADPCMSound( unsigned char *data, int size)
 			: soundData(data), soundSize(size), index(0) {}
 
 	/**
@@ -115,11 +115,14 @@ public:
 	 */
 	virtual void rewind();
 
+	unsigned char *soundData;
+
+
 private:
 	ADPCMSound(const ADPCMSound&);
 	ADPCMSound& operator= (const ADPCMSound&);
 
-	const unsigned char *soundData;
+	//const unsigned char *soundData;
 	int soundSize;
 	int index;
 };
