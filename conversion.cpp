@@ -12,8 +12,11 @@ we then convert them in ADPCM and store them into a vector for reproduction and 
 #include <vector>
 #include <cstdlib>
 #include "adpcm.h"
-
+#include "filesystem/file_access.h"
+#include <dirent.h>
 using namespace std;
+
+
 
 #pragma pack(push, 1)
 struct WavHeader 
@@ -34,12 +37,48 @@ struct WavHeader
 };
 #pragma pack(pop)
 
+void fail(const char *err)
+{
+    puts(err);
+    exit(1);
+}
+
 int conversion(int buffersize)
 {
-	
+	//file listing
+	cout<<"available files:"<<std::endl<<"\n";
+	DIR *d=opendir("/sd/");
+	if(d==NULL) fail("Can't open directory");
+	struct dirent *de;
+	int songindex = 0;
+	vector<string> songnames;
+	int song_selector=0;
+	while((de=readdir(d)))
+    {
+
+		songnames.push_back(de->d_name);
+		if(songnames.back().substr(songnames.back().find_last_of(".") + 1) == "wav"){
+			songindex++;
+			cout<<songindex<<")";
+			puts(de->d_name);
+			cout<<std::endl;
+		}
+		else {
+			songnames.pop_back();
+		}
+
+    }
+    closedir(d);
+    puts("end\n");
+
+	//file selection
+	printf("select your song\n");
+	scanf("%d", &song_selector);
+	printf("you choose song number %d\n",song_selector);
+    
 	//ifstream creation
 	string filename;
-	filename="/sd/fun_piano.wav";
+	filename="/sd/"+ songnames[song_selector-1];
 	ifstream in(filename.c_str(),ios::binary);
 	if(!in) return -1;
 
@@ -55,7 +94,6 @@ int conversion(int buffersize)
     std::cout << "Sample Rate: " << header.sampleRate << std::endl;
     std::cout << "Bits Per Sample: " << header.bitsPerSample << std::endl;
     std::cout << "Number of Channels: " << header.numChannels << std::endl;
-	
 	//out filestream creation
 	string outname= "/sd/reproducible_audio.txt";
 	ofstream  out(outname.c_str(),ios::binary);
@@ -65,6 +103,7 @@ int conversion(int buffersize)
 	vector<unsigned char> encoded;
 	int samples_number =0; 	//number of total samples converted
 	int ADPCMsample; //number of ADPCM converted samples for the buffer
+	std::cout << "starting conversion " << std::endl;
 	while(!in.eof()){
 		for(int i=0;i<buffersize;i++)
 		{
@@ -80,10 +119,9 @@ int conversion(int buffersize)
 			data.push_back(x);
 		}
 		
-
+		
 		ADPCMsample=data.size()%2==0?data.size():(data.size()-1);
 		samples_number += ADPCMsample >> 1;
-
 		//ADPCM encoding 
 		for(int i=0;i<ADPCMsample;i+=2)
 		{
@@ -106,6 +144,7 @@ int conversion(int buffersize)
 	}
 	in.close();
 	out.close();
+	std::cout << "conversion completed" << std::endl;
 	return samples_number;
 }
 

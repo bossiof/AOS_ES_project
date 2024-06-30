@@ -29,6 +29,7 @@
 #include <cstdio>
 #include <stdexcept>
 #include <cstring>
+#include <unistd.h>
 #include "miosix/kernel/scheduler/scheduler.h"
 #include "util/software_i2c.h"
 #include "adpcm.h"
@@ -50,7 +51,7 @@ typedef Gpio<GPIOD_BASE,4>  reset;
 typedef SoftwareI2C<sda,scl> i2c;
 #endif
 
-static const int bufferSize=1024; //Buffer RAM is 4*bufferSize bytes
+static const int bufferSize=8192; //Buffer RAM is 4*bufferSize bytes
 static Thread *waiting;
 static BufferQueue<unsigned short,bufferSize> *bq;
 static bool enobuf=true;
@@ -227,6 +228,7 @@ bool ADPCMSound::fillStereoBuffer(unsigned short *buffer, int size)
     unsigned char in;
 	for(int i=0;i<length;i+=4)
 	{
+
 		in=soundData[index++];
 		buffer[i+0]=buffer[i+1]=ADPCM_Decode(in & 0xf);
 		buffer[i+2]=buffer[i+3]=ADPCM_Decode(in>>4);
@@ -315,7 +317,7 @@ void Player::initialize(){
 void Player::single_play(Sound& sound){
     Lock<Mutex> l(mutex);
     FastInterruptDisableLock dLock;
-	cs43l22send(0x0f,0x00); //Unmute all channels
+	//cs43l22send(0x0f,0x00); //Unmute all channels
 	//Start playing
 	sound.rewind();
     waiting=Thread::getCurrentThread();
@@ -342,7 +344,7 @@ void Player::single_play(Sound& sound){
 	//Trailing blank audio, so as to be sure audio is played to the end
     //memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
 	//bufferFilled();  
-    cs43l22send(0x0f,0xf0); //Mute all channels
+    //cs43l22send(0x0f,0xf0); //Mute all channels
 
 }
 
