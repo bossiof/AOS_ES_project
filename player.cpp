@@ -51,7 +51,7 @@ typedef Gpio<GPIOD_BASE,4>  reset;
 typedef SoftwareI2C<sda,scl> i2c;
 #endif
 
-static const int bufferSize=1024; //Buffer RAM is 4*bufferSize bytes
+static const int bufferSize=4096; //Buffer RAM is 4*bufferSize bytes
 static Thread *waiting;
 static BufferQueue<unsigned short,bufferSize> *bq;
 static bool enobuf=true;

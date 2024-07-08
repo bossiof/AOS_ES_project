@@ -12,8 +12,8 @@ we then convert them in ADPCM and store them into a vector for reproduction and 
 #include <vector>
 #include <cstdlib>
 #include "adpcm.h"
-#include "filesystem/file_access.h"
 #include <dirent.h>
+#include "filesystem/file_access.h"
 using namespace std;
 
 
@@ -37,54 +37,9 @@ struct WavHeader
 };
 #pragma pack(pop)
 
-void fail(const char *err)
+int conversion(int buffersize, string filename)
 {
-    puts(err);
-    exit(1);
-}
 
-int conversion(int buffersize)
-{
-	//file listing
-	cout<<"available files:"<<std::endl<<"\n";
-	DIR *d=opendir("/sd/");
-	if(d==NULL) fail("Can't open directory");
-	struct dirent *de;
-	int songindex = 0;
-	vector<string> songnames;
-	int song_selector=0;
-	while((de=readdir(d)))
-    {
-
-		songnames.push_back(de->d_name);
-		if(songnames.back().substr(songnames.back().find_last_of(".") + 1) == "wav"){
-			songindex++;
-			cout<<songindex<<")";
-			puts(de->d_name);
-			cout<<std::endl;
-		}
-		else {
-			songnames.pop_back();
-		}
-
-    }
-    closedir(d);
-    
-
-	//file selection
-	printf("select your song\n");
-	do {
-	scanf("%d", &song_selector);
-	if ((song_selector<1) || (song_selector>songindex)) {
-		cout<< "wrong song number, retry"<<std::endl;
-	}
-	}while ((song_selector<1) || (song_selector>songindex));
-	
-	printf("you choose song number %d\n",song_selector);
-    
-	//ifstream creation
-	string filename;
-	filename="/sd/"+ songnames[song_selector-1];
 	ifstream in(filename.c_str(),ios::binary);
 	if(!in) return -1;
 
@@ -102,9 +57,7 @@ int conversion(int buffersize)
     std::cout << "Number of Channels: " << header.numChannels << std::endl;
 	//out filestream creation
 	string outname= "/sd/reproducible_audio.txt";
-	ofstream  out(outname.c_str(),ios::binary);
-	
-	
+	ofstream  out(outname.c_str(),ios::binary);	
 	vector<short> data;
 	vector<unsigned char> encoded;
 	int samples_number =0; 	//number of total samples converted

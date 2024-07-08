@@ -35,7 +35,7 @@ main.o: main.cpp player.h miosix/miosix.h \
  miosix/kernel/cpu_time_counter.h miosix/util/util.h reproducible_audio.h \
  conversion.h miosix/filesystem/file_access.h miosix/filesystem/file.h \
  miosix/filesystem/stringpart.h miosix/filesystem/devfs/devfs.h \
- miosix/filesystem/file.h miosix/filesystem/stringpart.h
+ miosix/filesystem/file.h miosix/filesystem/stringpart.h selection.h
 
 player.h:
 
@@ -140,3 +140,5 @@ miosix/filesystem/devfs/devfs.h:
 miosix/filesystem/file.h:
 
 miosix/filesystem/stringpart.h:
+
+selection.h:
