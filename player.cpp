@@ -228,7 +228,6 @@ bool ADPCMSound::fillStereoBuffer(unsigned short *buffer, int size)
     unsigned char in;
 	for(int i=0;i<length;i+=4)
 	{
-
 		in=soundData[index++];
 		buffer[i+0]=buffer[i+1]=ADPCM_Decode(in & 0xf);
 		buffer[i+2]=buffer[i+3]=ADPCM_Decode(in>>4);
@@ -292,7 +291,7 @@ void Player::initialize(){
     cs43l22send(0x05,0x20); //AUTO=0, SPEED=01, 32K=0, VIDEO=0, RATIO=0, MCLK=0
     cs43l22send(0x04,0xaf); //Headphone always ON, Speaker always OFF
     cs43l22send(0x06,0x04); //I2S Mode
-    cs43l22volume(-20);
+    cs43l22volume(-10);
 
     SPI3->CR2=SPI_CR2_TXDMAEN;
     SPI3->I2SPR=  SPI_I2SPR_MCKOE | 6;

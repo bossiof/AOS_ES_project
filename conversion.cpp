@@ -69,7 +69,7 @@ int conversion(int buffersize)
 
     }
     closedir(d);
-    puts("end\n");
+    
 
 	//file selection
 	printf("select your song\n");
@@ -117,8 +117,15 @@ int conversion(int buffersize)
 			short xl;
 			short xr;
 			short x;
+			if(!in) {
+				break;
+				//return samples_number;	
+			}
 			in.read(reinterpret_cast<char*>(&intermediate_x[0]),4);
-			if(!in) return samples_number;
+			if(!in) {
+				break;
+				//return samples_number;	
+			}
 			xl = (intermediate_x[1]<<8)| intermediate_x[0];
 			xr = (intermediate_x[3]<<8)| intermediate_x[2];	
 			x = (xr>>1) + (xl>>1);		
