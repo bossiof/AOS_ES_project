@@ -20,12 +20,13 @@ int main()
 	
 
 
-	int buffersize=8000;//buffer passed to the conversion function 
-	int playbuffer = 8192; //buffer used for audio playback
+	int buffersize=16000;//buffer passed to the conversion function 
+	int playbuffer = 16384; //buffer used for audio playback
 	int audio_size; //audio size (in number of samples) used for audio playback and also for information purposes
 	string filename;
 	filename= "/sd/reproducible_audio.txt";
 	//the conversion takes the raw file from the microsd and converts it into an ADPCM encoded file (also on the microsd)
+	for(int reproduction_counter=0;  reproduction_counter<10; reproduction_counter++ ){
 	audio_size = conversion(buffersize);
 
 	if(audio_size<2){
@@ -49,10 +50,10 @@ int main()
 
 		
 		if(!audio_bin_file) {
-			Player::instance().trail();
-			printf("audio reproduction is over\n");
-			audio_bin_file.close();
-			return 0; 
+			//Player::instance().trail();
+			//printf("audio reproduction is over\n");
+			//audio_bin_file.close();
+			break;
 		}	
 			
 		Player::instance().single_play(sound);	
@@ -60,6 +61,8 @@ int main()
 	Player::instance().trail();
 	printf("audio reproduction is over\n");
 	audio_bin_file.close();
+	printf("restart?\n");
+	}
 	
 	return 0;
 

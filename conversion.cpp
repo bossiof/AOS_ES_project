@@ -73,7 +73,13 @@ int conversion(int buffersize)
 
 	//file selection
 	printf("select your song\n");
+	do {
 	scanf("%d", &song_selector);
+	if ((song_selector<1) || (song_selector>songindex)) {
+		cout<< "wrong song number, retry"<<std::endl;
+	}
+	}while ((song_selector<1) || (song_selector>songindex));
+	
 	printf("you choose song number %d\n",song_selector);
     
 	//ifstream creation
