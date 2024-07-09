@@ -53,7 +53,8 @@ string selection()
 	struct dirent *de;
 	int songindex = 0;
 	vector<string> songnames;
-	vector<string> converted_files;
+	//vector<string> converted_files;
+	string extensionless_songname;
 	int song_selector=0;
 	while((de=readdir(d)))
     {
@@ -65,10 +66,10 @@ string selection()
 			puts(de->d_name);
 			cout<<std::endl;
 		}
-		else if(songnames.back().substr(songnames.back().find_last_of(".") + 1) == "txt"){
+		/*else if(songnames.back().substr(songnames.back().find_last_of(".") + 1) == "txt"){
 			converted_files.push_back(songnames.back());
 			songnames.pop_back();
-		}
+		}*/
 		else {
 			songnames.pop_back();
 		}
@@ -77,7 +78,6 @@ string selection()
 
     }
     closedir(d);
-    
 
 	//file selection
 	printf("select your song\n");
@@ -89,10 +89,10 @@ string selection()
 	}while ((song_selector<1) || (song_selector>songindex));
 	
 	printf("you choose song number %d\n",song_selector);
-    
-	//ifstream creation
+	extensionless_songname = songnames[song_selector-1]; 
+	extensionless_songname.erase(extensionless_songname.find_last_of("."));
 	string filename;
-	filename="/sd/"+ songnames[song_selector-1];
+	filename= extensionless_songname;
 	return filename;
 }
 

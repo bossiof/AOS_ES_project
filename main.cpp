@@ -22,16 +22,15 @@ int main()
 
 
 	int buffersize=16000;//buffer passed to the conversion function 
-	int playbuffer = 24000; //buffer used for audio playback
+	int playbuffer = 28000; //buffer used for audio playback
 	int audio_size; //audio size (in number of samples) used for audio playback and also for information purposes
 	string convertible_filename;
 	string filename;
-	filename= "/sd/reproducible_audio.txt";
 	//the conversion takes the raw file from the microsd and converts it into an ADPCM encoded file (also on the microsd)
 	for(int reproduction_counter=0;  reproduction_counter<10; reproduction_counter++ ){
 		convertible_filename = selection();
 		audio_size = conversion(buffersize, convertible_filename);
-
+		filename= "/sd/"+convertible_filename+".txt";
 		if(audio_size<2){
 			Player::instance().trail();
 			return 0;

@@ -291,7 +291,7 @@ void Player::initialize(){
     cs43l22send(0x05,0x20); //AUTO=0, SPEED=01, 32K=0, VIDEO=0, RATIO=0, MCLK=0
     cs43l22send(0x04,0xaf); //Headphone always ON, Speaker always OFF
     cs43l22send(0x06,0x04); //I2S Mode
-    cs43l22volume(-10);
+    cs43l22volume(-30);
 
     SPI3->CR2=SPI_CR2_TXDMAEN;
     SPI3->I2SPR=  SPI_I2SPR_MCKOE | 6;
