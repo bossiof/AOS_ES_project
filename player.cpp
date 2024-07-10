@@ -51,7 +51,7 @@ typedef Gpio<GPIOD_BASE,4>  reset;
 typedef SoftwareI2C<sda,scl> i2c;
 #endif
 
-static const int bufferSize=4096; //Buffer RAM is 4*bufferSize bytes
+static const int bufferSize=256; //Buffer RAM is 4*bufferSize bytes
 static Thread *waiting;
 static BufferQueue<unsigned short,bufferSize> *bq;
 static bool enobuf=true;
@@ -312,7 +312,6 @@ void Player::initialize(){
 }
 
 //function used to play the sound a single time
-
 void Player::single_play(Sound& sound){
     Lock<Mutex> l(mutex);
     FastInterruptDisableLock dLock;
@@ -325,7 +324,6 @@ void Player::single_play(Sound& sound){
 	{
 		if(enobuf)
 		{
-			//printf("reproduing sample\n");
 			enobuf=false;
 			dmaRefill();
             if(first)
@@ -339,8 +337,6 @@ void Player::single_play(Sound& sound){
 		if(sound.fillStereoBuffer(getWritableBuffer(),bufferSize)) break;
 		bufferFilled();
 	}
-
-	//Trailing blank audio, so as to be sure audio is played to the end
     //memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
 	//bufferFilled();  
     //cs43l22send(0x0f,0xf0); //Mute all channels
@@ -369,7 +365,7 @@ void Player::trail()
 		FastInterruptDisableLock dLock;
         RCC->CR &= ~RCC_CR_PLLI2SON;
     }
-    delete bq;
+    //delete bq;
 
 }
 //method used for continous play
