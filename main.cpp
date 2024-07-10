@@ -41,11 +41,6 @@ int main()
 
 
 		auto reproducible_audio_array = new unsigned char[playbuffer];
-		//int multiplier = (((audio_size-(audio_size/playbuffer)*playbuffer)-1)/4)*4;
-		//auto last_samples_array = new unsigned char[multiplier];
-		//ADPCMSound sound(reproducible_audio_array,playbuffer);
-		//ADPCMSound last_sound(last_samples_array,multiplier);
-
 		ifstream audio_bin_file (filename.c_str(),ios::binary);
 
 		printf("starting audio reproduction:\n");
@@ -58,32 +53,10 @@ int main()
 			ADPCMSound sound(reproducible_audio_array,toRead);
 			Player::instance().single_play(sound); //here i reproduce a single audio buffer read from the input file
 			audio_size-=toRead;
-
-
-			//if(i>=audio_size-playbuffer){
-			//	audio_bin_file.read(reinterpret_cast<char*>(last_sound.soundData),(multiplier));	
-			//	Player::instance().single_play(last_sound);
-			//	break;
-			//}
-			//audio_bin_file.read(reinterpret_cast<char*>(sound.soundData),playbuffer);
-
-			
-			//if(!audio_bin_file) {
-			//	Player::instance().single_play(sound);	
-				//Player::instance().trail();
-				//printf("audio reproduction is over\n");
-				//audio_bin_file.close();
-			//	break;
-			//}	
-				
-			
-				
 		}
 		Player::instance().trail();
 		printf("audio reproduction is over\n");
 		delete[] reproducible_audio_array;
-		//delete[] last_samples_array;
-		//audio_bin_file.close();
 		printf("restart?\n");
 	}
 	
