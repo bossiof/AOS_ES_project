@@ -38,7 +38,7 @@ struct WavHeader
 };
 #pragma pack(pop)
 
-int conversion(int buffersize, string filename)
+int conversion(int buffersize, const string& filename)
 {
 	int samples_number =0; 	//number of total samples converted
 	string internal_filename = "/sd/"+ filename + ".wav";

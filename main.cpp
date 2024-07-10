@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include <sys/stat.h>
 #include "conversion.h"
 #include <cstdint>
@@ -39,26 +40,32 @@ int main()
 		printf("conversion is over, number of samples: %d \n", audio_size);
 
 
-		unsigned char *reproducible_audio_array; //array used for the playback buffer
-		reproducible_audio_array = (unsigned char*)malloc(playbuffer);
-		unsigned char *last_samples_array;
-		int multiplier = (((audio_size-(audio_size/playbuffer)*playbuffer)-1)/4)*4;
-		last_samples_array = (unsigned char*)malloc(multiplier);
-		ADPCMSound sound(reproducible_audio_array,playbuffer);
-		ADPCMSound last_sound(last_samples_array,multiplier);
+		auto reproducible_audio_array = new unsigned char[playbuffer];
+		//int multiplier = (((audio_size-(audio_size/playbuffer)*playbuffer)-1)/4)*4;
+		//auto last_samples_array = new unsigned char[multiplier];
+		//ADPCMSound sound(reproducible_audio_array,playbuffer);
+		//ADPCMSound last_sound(last_samples_array,multiplier);
 
 		ifstream audio_bin_file (filename.c_str(),ios::binary);
 
 		printf("starting audio reproduction:\n");
 		Player::instance().initialize(); //here i initialize the player to avoid eventual overhead during audio reproduction
 		//audio reproduction phase
-		for(int i=0;i<audio_size;i+=playbuffer){
-			if(i>=audio_size-playbuffer){
-				audio_bin_file.read(reinterpret_cast<char*>(last_sound.soundData),(multiplier));	
-				Player::instance().single_play(last_sound);
-				break;
-			}
-			audio_bin_file.read(reinterpret_cast<char*>(sound.soundData),playbuffer);
+		while(audio_size>0) {
+
+			int toRead=min(audio_size,playbuffer);
+			audio_bin_file.read(reinterpret_cast<char*>(reproducible_audio_array),toRead);
+			ADPCMSound sound(reproducible_audio_array,toRead);
+			Player::instance().single_play(sound); //here i reproduce a single audio buffer read from the input file
+			audio_size-=toRead;
+
+
+			//if(i>=audio_size-playbuffer){
+			//	audio_bin_file.read(reinterpret_cast<char*>(last_sound.soundData),(multiplier));	
+			//	Player::instance().single_play(last_sound);
+			//	break;
+			//}
+			//audio_bin_file.read(reinterpret_cast<char*>(sound.soundData),playbuffer);
 
 			
 			//if(!audio_bin_file) {
@@ -69,14 +76,14 @@ int main()
 			//	break;
 			//}	
 				
-			Player::instance().single_play(sound);
+			
 				
 		}
 		Player::instance().trail();
 		printf("audio reproduction is over\n");
-		free(reproducible_audio_array);
-		free(last_samples_array);
-		audio_bin_file.close();
+		delete[] reproducible_audio_array;
+		//delete[] last_samples_array;
+		//audio_bin_file.close();
 		printf("restart?\n");
 	}
 	
