@@ -36,7 +36,7 @@ main.o: main.cpp player.h miosix/miosix.h \
  conversion.h miosix/filesystem/file_access.h miosix/filesystem/file.h \
  miosix/filesystem/stringpart.h miosix/filesystem/devfs/devfs.h \
  miosix/filesystem/file.h miosix/filesystem/stringpart.h selection.h \
- adpcm.h
+ adpcm_file.h
 
 player.h:
 
@@ -144,4 +144,4 @@ miosix/filesystem/stringpart.h:
 
 selection.h:
 
-adpcm.h:
+adpcm_file.h:

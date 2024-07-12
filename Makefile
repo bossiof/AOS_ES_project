@@ -17,7 +17,7 @@ SUBDIRS := $(KPATH)
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp player.cpp adpcm.c conversion.cpp selection.cpp
+main.cpp player.cpp adpcm.c conversion.cpp selection.cpp adpcm_file.cpp
 
 ##
 ## List here additional static libraries with relative path
